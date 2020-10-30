@@ -169,6 +169,13 @@ class DocBase extends Base {
         feature: 'in'
       }
     }
+    if (this.client && this.client.data && this.client.data.rid === 16) {
+      if (!options.filter) options.filter = {}
+      options.filter.service_code = {
+        keyword: [this.client.data.cust_id],
+        feature: 'in'
+      }
+    }
     let model = new modelDocu()
     let data = await model.listDocs(existDb, clName, options, page, size)
     if (data[0] === false) {
