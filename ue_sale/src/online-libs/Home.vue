@@ -1,5 +1,7 @@
 <template>
-  <div id="home"></div>
+  <div>
+    <div id="home"></div>
+  </div>
 </template>
 
 <script>
@@ -11,16 +13,30 @@ export default {
     bucketName: String,
     dbName: String,
     clName: String,
-    tmsAxiosName: String,
+    tmsAxiosName: String
+  },
+  methods: {
+    lookTel(doc) {
+      const response = {
+        code: 0,
+        result: { cust_id: doc.cust_id, order_id: doc.order_id }
+      }
+      this.$emit('success', response)
+    }
   },
   mounted() {
     import('../../../ue_comp/src/List.vue').then(Module => {
-      Module.createAndMount(Vue, {
-        bucketName: this.bucketName,
-        dbName: this.dbName,
-        clName: this.clName,
-        tmsAxiosName: this.tmsAxiosName
-      }, 'home')
+      Module.createAndMount(
+        Vue,
+        {
+          bucketName: this.bucketName,
+          dbName: this.dbName,
+          clName: this.clName,
+          tmsAxiosName: this.tmsAxiosName,
+          lookEvent: this.lookTel
+        },
+        'home'
+      )
     })
   }
 }
