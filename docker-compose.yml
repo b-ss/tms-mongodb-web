@@ -4,22 +4,32 @@ services:
     build: ./mongodb
     image: 192.168.253.28/stateful/mongodb:latest
     container_name: order-mongodb
-  
+
   back:
     build: ./back
     image: 192.168.253.28/mg_order/back:latest
     container_name: order-back
     environment:
-       - TMS_APP_PORT=3000
-       - TMS_APP_NAME=dev-op
-       - TMS_APP_LOG4JS_LEVEL=debug
-       - TMS_FINDER_FS_OUTDIR=/data
-       - TMS_FINDER_FS_ROOTDIR=/data
-       - TMS_FINDER_FS_CUSTOMNAME=true
-       - TMS_MONGODB_HOST=omongodb
-       - TMS_MONGODB_PORT=27017
-    command: ['sh', './wait-for.sh', 'omongodb:27017', '-t', '300', '--', 'node', 'server']
-  
+      - TMS_APP_PORT=3000
+      - TMS_APP_NAME=dev-op
+      - TMS_APP_LOG4JS_LEVEL=debug
+      - TMS_FINDER_FS_OUTDIR=/data
+      - TMS_FINDER_FS_ROOTDIR=/data
+      - TMS_FINDER_FS_CUSTOMNAME=true
+      - TMS_MONGODB_HOST=omongodb
+      - TMS_MONGODB_PORT=27017
+    command:
+      [
+        'sh',
+        './wait-for.sh',
+        'omongodb:27017',
+        '-t',
+        '300',
+        '--',
+        'node',
+        'server',
+      ]
+
   admin:
     build:
       context: .
@@ -35,7 +45,7 @@ services:
     container_name: order-admin
     environment:
       - NGINX_WEB_BASE_URL=/order/admin
-      
+
   mongo:
     build:
       context: .
@@ -65,6 +75,7 @@ services:
         vue_app_user_role: sale
         vue_app_tags: manager_editor
         vue_app_default_tag: manager_list
+        vue_app_worklayer_address: http://223.255.252.183:30001/op/login
     image: 192.168.253.28/mg_order/sale:latest
     container_name: order-sale
     environment:

@@ -16,6 +16,7 @@ ARG vue_app_back_api_fs
 ARG vue_app_user_role
 ARG vue_app_tags
 ARG vue_app_default_tag
+ARG vue_app_worklayer_address
 
 RUN echo VUE_APP_BASE_URL=$vue_app_base_url > ./ue_sale/.env && \
   echo VUE_APP_BACK_AUTH_BASE=$vue_app_back_auth_base >> ./ue_sale/.env && \
@@ -26,7 +27,9 @@ RUN echo VUE_APP_BASE_URL=$vue_app_base_url > ./ue_sale/.env && \
   echo VUE_APP_BACK_API_FS=$vue_app_back_api_fs >> ./ue_sale/.env && \
   echo VUE_APP_USER_ROLE=$vue_app_user_role >> ./ue_sale/.env && \
   echo VUE_APP_TAGS=$vue_app_tags >> ./ue_sale/.env && \
-  echo VUE_APP_DEFAULT_TAG=$vue_app_default_tag >> ./ue_sale/.env
+  echo VUE_APP_DEFAULT_TAG=$vue_app_default_tag >> ./ue_sale/.env && \
+  echo VUE_APP_WORKLAYER_ADDRESS=$vue_app_worklayer_address >> ./ue_sale/.env
+  
 
 RUN cd ue_sale && cnpm i &&  yarn build.lib
 

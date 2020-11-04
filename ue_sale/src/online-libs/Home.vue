@@ -16,12 +16,13 @@ export default {
     tmsAxiosName: String
   },
   methods: {
-    lookTel(doc) {
-      const response = {
-        code: 0,
-        result: { cust_id: doc.cust_id, order_id: doc.order_id }
-      }
-      this.$emit('success', response)
+    lookTel() {
+      window.open(process.env.VUE_APP_WORKLAYER_ADDRESS)
+      // const response = {
+      //   code: 0,
+      //   result: { cust_id: doc.cust_id, order_id: doc.order_id }
+      // }
+      // this.$emit('success', response)
     }
   },
   mounted() {
