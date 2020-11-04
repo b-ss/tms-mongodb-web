@@ -507,28 +507,36 @@ class DocBase extends Base {
               enums = enums.map(ele => ele.trim().replace(/\n/g, ''))
             }
             if (columns[ele].enumGroups && columns[ele].enumGroups.length) {
-              columns[ele].enumGroups.forEach(enumGroup => {
-                if (
-                  enumGroup.assocEnum &&
-                  enumGroup.assocEnum.property &&
-                  enumGroup.assocEnum.value
-                ) {
-                  console.log('item', item[enumGroup.assocEnum.property])
+              columns[ele].enumGroups
+                .filter(enumGroup => {
                   if (
-                    item[enumGroup.assocEnum.property] ===
+                    enumGroup.assocEnum &&
+                    enumGroup.assocEnum.property &&
                     enumGroup.assocEnum.value
                   ) {
-                    columns[ele].enum.forEach(childItem => {
-                      if (
-                        childItem.group === enumGroup.id &&
-                        enums.includes(childItem[gets])
-                      ) {
-                        arr.push(childItem.label)
-                      }
-                    })
+                    let currentVal = ''
+                    let property = enumGroup.assocEnum.property
+                    if (model === 'toValue') {
+                      let filterEnum = columns[property].enum.filter(
+                        e => e.label === item[property]
+                      )
+                      currentVal = filterEnum[0].value
+                    } else {
+                      currentVal = item[property]
+                    }
+                    return currentVal === enumGroup.assocEnum.value
                   }
-                }
-              })
+                })
+                .map(oEnumG => {
+                  columns[ele].enum.forEach(childItem => {
+                    if (
+                      childItem.group === oEnumG.id &&
+                      enums.includes(childItem[gets])
+                    ) {
+                      arr.push(childItem[sets])
+                    }
+                  })
+                })
             } else {
               columns[ele].enum.forEach(childItem => {
                 if (enums.includes(childItem[gets])) arr.push(childItem[sets])
