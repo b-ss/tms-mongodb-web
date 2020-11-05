@@ -155,12 +155,17 @@ export default {
       this.dbName = dbName
       this.collection = collection
       if (process.env.VUE_APP_FRONT_DOCEDITOR_ADD) {
-        this.plugins = process.env.VUE_APP_FRONT_DOCEDITOR_ADD.split(',')
+        let str = process.env.VUE_APP_FRONT_DOCEDITOR_ADD.replace(/\s/g, '')
+        this.plugins = str.split(',')
       }
       await this.handleProperty()
       if (doc && doc._id) {
-        if (process.env.VUE_APP_PLUGINS_DOCEDITOR_MODIFY) {
-          this.plugins = process.env.VUE_APP_PLUGINS_DOCEDITOR_MODIFY.split(',')
+        if (process.env.VUE_APP_FRONT_DOCEDITOR_MODIFY) {
+          let str = process.env.VUE_APP_FRONT_DOCEDITOR_MODIFY.replace(
+            /\s/g,
+            ''
+          )
+          this.plugins = str.split(',')
         }
         this.document = JSON.parse(
           JSON.stringify(Object.assign(this.document, doc))

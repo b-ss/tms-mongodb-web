@@ -17,18 +17,21 @@ export default class Utils {
    * 生成订单编号
    */
   static generateOrderId(schema, doc) {
-    if (!schema.properties.source && !schema.properties.order_id)
-      return { msg: 'success', data: doc }
-    if (doc.source && doc.source === '3') {
-      doc['order_id'] = Utils.getRandom()
+    if (!schema.properties.source && !schema.properties.order_id) {
       return { msg: 'success', data: doc }
     }
+    if (doc.source && doc.source === '3') {
+      doc['order_id'] = Utils.getRandom()
+    }
+    return { msg: 'success', data: doc }
   }
   /**
    * 定义审核状态
    */
   static defineAuditStatus(schema, doc) {
-    if (!schema.properties.auditing_status) return { msg: 'success', data: doc }
+    if (!schema.properties.auditing_status) {
+      return { msg: 'success', data: doc }
+    }
     doc.auditing_status = '3'
     return { msg: 'success', data: doc }
   }
@@ -95,7 +98,8 @@ export default class Utils {
   static fillingZero(schema, doc) {
     if (!process.env.VUE_APP_FILLINGZERO_FIELD)
       return { msg: 'success', data: doc }
-    const config = process.env.VUE_APP_FILLINGZERO_FIELD
+    let str = process.env.VUE_APP_FILLINGZERO_FIELD.replace(/\s/g, '')
+    const config = str.split(',')
 
     let validate = Object.entries(doc)
       .map(([key, value]) => {
