@@ -41,6 +41,8 @@ services:
         vue_app_back_api_plugin: /order/plugin
         vue_app_back_api_fs: /order/fs
         vue_app_submit_valitor_field: dismoney_a_yly, dismoney_b_yly, dismoney_c_yly, dismoney_d_yly, dismoney_e_yly, dismoney_f_yly, disovermoney_yly, dismoney_time_yly, discost_month_gzh, dismoney_a_gzh, dismoney_b_gzh, dismoney_c_gzh, dismoney_d_gzh, dismoney_e_gzh, dismoney_f_gzh, dismoney_time_gzh, disovermoney_gzh, discost_call_gzh, discost_msg_gzh, discostmonth_yzj, discostcall_yzj
+        vue_app_front_doceditor_add: generateOrderId,fillingZero
+        vue_app_front_doceditor_modify: fillingZero,defineAuditStatus
     image: 192.168.253.28/mg_order/admin:latest
     container_name: order-admin
     environment:
@@ -57,6 +59,9 @@ services:
         vue_app_back_api_plugin: /order/plugin
         vue_app_back_api_fs: /order/fs
         vue_app_submit_valitor_field: dismoney_a_yly, dismoney_b_yly, dismoney_c_yly, dismoney_d_yly, dismoney_e_yly, dismoney_f_yly, disovermoney_yly, dismoney_time_yly, discost_month_gzh, dismoney_a_gzh, dismoney_b_gzh, dismoney_c_gzh, dismoney_d_gzh, dismoney_e_gzh, dismoney_f_gzh, dismoney_time_gzh, disovermoney_gzh, discost_call_gzh, discost_msg_gzh, discostmonth_yzj, discostcall_yzj
+        vue_app_front_doceditor_add: generateOrderId,fillingZero
+        vue_app_front_doceditor_modify: fillingZero,defineAuditStatus
+        vue_app_front_batcheditor: fillingZero
     image: 192.168.253.28/mg_order/mongo:latest
     container_name: order-mongo
     environment:
@@ -76,6 +81,7 @@ services:
         vue_app_tags: manager_editor
         vue_app_default_tag: manager_list
         vue_app_worklayer_address: http://223.255.252.183:30001/op/login
+        vue_app_front_batcheditor: fillingZero,defineAuditStatus
     image: 192.168.253.28/mg_order/sale:latest
     container_name: order-sale
     environment:

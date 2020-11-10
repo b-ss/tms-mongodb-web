@@ -18,7 +18,7 @@
 <script>
 import { ElJsonDoc as TmsElJsonDoc } from 'tms-vue-ui'
 import { TmsAxios } from 'tms-vue'
-import utils from '../src/tms/utils'
+import utils from '../tms/utils'
 import apiDoc from '../apis/document'
 import apiSchema from '../apis/schema'
 
@@ -84,17 +84,20 @@ export default {
     },
     onJsonDocSubmit(slimDoc, newDoc) {
       this.isSubmit = true
-      let validate = this.plugins
-        .map(item => {
-          const result = utils[item](this.body, newDoc)
-          if (result.msg === 'success') {
-            newDoc = result.data
-            return true
-          } else {
-            return false
-          }
-        })
-        .every(ele => ele === true)
+      let validate = true
+      if (this.plugins.length) {
+        validate = this.plugins
+          .map(item => {
+            const result = utils[item](this.body, newDoc)
+            if (result.msg === 'success') {
+              newDoc = result.data
+              return true
+            } else {
+              return false
+            }
+          })
+          .every(ele => ele === true)
+      }
       if (!validate) {
         this.isSubmit = false
         return false
@@ -164,6 +167,7 @@ export default {
         )
       }
       this.$mount()
+
       document.body.appendChild(this.$el)
       return new Promise(resolve => {
         this.$on('submit', newDoc => {

@@ -132,17 +132,20 @@ export default {
       })
     },
     async onSubmit() {
-      let validate = this.plugins
-        .map(item => {
-          const result = utils[item](this.collection.schema.body, this.column)
-          if (result.msg === 'success') {
-            this.column = result.data
-            return true
-          } else {
-            return false
-          }
-        })
-        .every(ele => ele === true)
+      let validate = true
+      if (this.plugins.length) {
+        validate = this.plugins
+          .map(item => {
+            const result = utils[item](this.collection.schema.body, this.column)
+            if (result.msg === 'success') {
+              this.column = result.data
+              return true
+            } else {
+              return false
+            }
+          })
+          .every(ele => ele === true)
+      }
       if (validate) {
         const properties = this.collection.schema.body.properties
         for (let [key, val] of Object.entries(this.column)) {
