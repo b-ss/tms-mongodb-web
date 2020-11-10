@@ -1,8 +1,6 @@
 const _ = require('tms-koa/node_modules/lodash')
 const ip = process.env.TMS_PLUGINS_IP || ''
-let sendConfig,
-  receiveConfig,
-  pluginConfig
+let sendConfig, receiveConfig, pluginConfig
 
 function initSendConfig() {
   // 发送回调相对路径
@@ -14,10 +12,31 @@ function initSendConfig() {
     collection: [],
     document: [
       [
-        { url: '/it/api/checkApi/createAccount?async=Y', method: 'post' },
+        {
+          url: '/it/api/checkApi/createAccount?async=Y&createType=cust',
+          method: 'post'
+        },
         { docSchemas: false, isNeedGetParams: true },
-        { name: '申请开通账号', description: '申请开通账号', batch: ['all', 'filter', 'ids'], auth: '*' }
+        {
+          name: '申请客户经理账号',
+          description: '申请客户经理账号',
+          batch: ['all', 'filter', 'ids'],
+          auth: ['*']
+        }
       ],
+      [
+        {
+          url: '/it/api/checkApi/createAccount?async=Y&createType=manager',
+          method: 'post'
+        },
+        { docSchemas: false, isNeedGetParams: true },
+        {
+          name: '申请客户账号',
+          description: '申请客户账号',
+          batch: ['all', 'filter', 'ids'],
+          auth: ['*']
+        }
+      ]
     ]
   }
 }
@@ -29,13 +48,10 @@ function initReceiveConfig() {
   // 接收配置-以模块划分
   receiveConfig = {
     // it模块每个会receiveCB接口都会包含event和eventType
-    // callback: { path: `${receiveCBPath}/document`, callbackName: '' } 
-    it: [
-      { name: '申请开通账号', event: 'createAccount', eventType: 'create' },
-    ]
+    // callback: { path: `${receiveCBPath}/document`, callbackName: '' }
+    it: [{ name: '申请开通账号', event: 'createAccount', eventType: 'create' }]
   }
 }
-
 
 // 动态添加域名及模块名(模块名默认以第一个url中/it/之内的字符)
 function initIpConfig(sendConfig) {
@@ -60,6 +76,7 @@ pluginConfig = {
 }
 
 const fs = require('fs')
-if (fs.existsSync(process.cwd() + "/config/plugin.local.js")) _.merge(pluginConfig, require(process.cwd() + "/config/plugin.local.js"))
+if (fs.existsSync(process.cwd() + '/config/plugin.local.js'))
+  _.merge(pluginConfig, require(process.cwd() + '/config/plugin.local.js'))
 
 module.exports = pluginConfig
