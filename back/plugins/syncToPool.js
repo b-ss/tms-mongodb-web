@@ -144,6 +144,36 @@ class SyncToPool extends Base {
       spareTotal
     })
   }
+
+  async missSchemaOrOrder(
+    source,
+    schema,
+    order,
+    abnormalTotal,
+    insStatus,
+    operation,
+    current,
+    colle
+  ) {
+    let schemaErr = [],
+      orderErr = []
+    source.forEach(field => {
+      if (!schema[field]) schemaErr.push(field)
+      if (!order[field]) orderErr.push(schema[field].title)
+    })
+    if (schemaErr.length || orderErr.length) {
+      abnormalTotal++
+      if (schemaErr.length) insStatus += schemaErr.join(',') + '的列不存在'
+      if (orderErr.length) insStatus += orderErr.join(',') + '的值为空'
+      let syncTime = operation === '1' ? '' : current
+      await colle.updateOne(
+        { _id: ObjectId(order._id) },
+        { $set: { pool_sync_time: syncTime, pool_sync_status: insStatus } }
+      )
+      return [false, insStatus]
+    }
+    return [true]
+  }
   /**
    *  同步 (接口方式)
    *  @orders 待同步的数据
@@ -184,19 +214,18 @@ class SyncToPool extends Base {
       }
 
       // 判断基础列是否都有值
-      let baseErrorFields = this.baseFields.filter(
-        field => !schema[field] || !order[field]
+      let baseErr = await this.missSchemaOrOrder(
+        this.baseFields,
+        schema,
+        order,
+        abnormalTotal,
+        insStatus,
+        operation,
+        current,
+        colle
       )
-      if (baseErrorFields.length) {
-        abnormalTotal++
-        insStatus += baseErrorFields.join(',') + '的值为空'
-        let syncTime = operation === '1' ? '' : current
-        await colle.updateOne(
-          { _id: ObjectId(order._id) },
-          { $set: { pool_sync_time: syncTime, pool_sync_status: insStatus } }
-        )
-        return Promise.resolve({ status: false, msg: insStatus })
-      }
+      if (!baseErr[0])
+        return Promise.resolve({ status: false, msg: baseErr[1] })
 
       // 基础字段
       let postData = {
@@ -221,19 +250,18 @@ class SyncToPool extends Base {
           'costtype_yly',
           'recordMode_yly'
         ]
-        const ylyErrorFields = ylyFields.filter(
-          field => !schema[field] || !order[field]
+        let ylyErr = await this.missSchemaOrOrder(
+          ylyFields,
+          schema,
+          order,
+          abnormalTotal,
+          insStatus,
+          operation,
+          current,
+          colle
         )
-        if (ylyErrorFields.length) {
-          abnormalTotal++
-          insStatus += ylyErrorFields.join(',') + '列不存在或值为空'
-          let syncTime = operation === '1' ? '' : current
-          await colle.updateOne(
-            { _id: ObjectId(order._id) },
-            { $set: { pool_sync_time: syncTime, pool_sync_status: insStatus } }
-          )
-          return Promise.resolve({ status: false, msg: insStatus })
-        }
+        if (!ylyErr[0])
+          return Promise.resolve({ status: false, msg: ylyErr[1] })
         // 准备数据
         let data = {
           pushUrl: order.cdrpush_url,
@@ -283,19 +311,18 @@ class SyncToPool extends Base {
             yzjFields.push('call_url_yzj')
           }
         }
-        const yzjErrorFields = yzjFields.filter(
-          field => !schema[field] || !order[field]
+        let yzjErr = await this.missSchemaOrOrder(
+          yzjFields,
+          schema,
+          order,
+          abnormalTotal,
+          insStatus,
+          operation,
+          current,
+          colle
         )
-        if (yzjErrorFields.length) {
-          abnormalTotal++
-          insStatus += yzjErrorFields.join(',') + '列不存在或值为空'
-          let syncTime = operation === '1' ? '' : current
-          await colle.updateOne(
-            { _id: ObjectId(order._id) },
-            { $set: { pool_sync_time: syncTime, pool_sync_status: insStatus } }
-          )
-          return Promise.resolve({ status: false, msg: insStatus })
-        }
+        if (!yzjErr[0])
+          return Promise.resolve({ status: false, msg: yzjErr[1] })
         // 准备数据
         let data = {
           recyzj_flag: order.recyzj_flag,
@@ -330,19 +357,18 @@ class SyncToPool extends Base {
         if (order.biz_function && order.biz_function.indexOf('2') !== -1) {
           gzhFields.push('msg_url')
         }
-        const gzhErrorFields = gzhFields.filter(
-          field => !schema[field] || !order[field]
+        let gzhErr = await this.missSchemaOrOrder(
+          gzhFields,
+          schema,
+          order,
+          abnormalTotal,
+          insStatus,
+          operation,
+          current,
+          colle
         )
-        if (gzhErrorFields.length) {
-          abnormalTotal++
-          insStatus += gzhErrorFields.join(',') + '列不存在或值为空'
-          let syncTime = operation === '1' ? '' : current
-          await colle.updateOne(
-            { _id: ObjectId(order._id) },
-            { $set: { pool_sync_time: syncTime, pool_sync_status: insStatus } }
-          )
-          return Promise.resolve({ status: false, msg: insStatus })
-        }
+        if (!gzhErr[0])
+          return Promise.resolve({ status: false, msg: gzhErr[1] })
         // 准备数据
         let data = {
           cost_month: order.discost_month_gzh
