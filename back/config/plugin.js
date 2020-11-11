@@ -13,7 +13,7 @@ function initSendConfig() {
     document: [
       [
         {
-          url: '/it/api/checkApi/createAccount?async=Y&createType=cust',
+          url: '/it/api/checkApi/createAccount?async=Y&createType=manager',
           method: 'post'
         },
         { docSchemas: false, isNeedGetParams: true },
@@ -26,7 +26,7 @@ function initSendConfig() {
       ],
       [
         {
-          url: '/it/api/checkApi/createAccount?async=Y&createType=manager',
+          url: '/it/api/checkApi/createAccount?async=Y&createType=cust',
           method: 'post'
         },
         { docSchemas: false, isNeedGetParams: true },
