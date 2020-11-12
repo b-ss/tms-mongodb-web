@@ -144,7 +144,10 @@ class SyncToPool extends Base {
       spareTotal
     })
   }
-
+  /**
+   *  缺少列或值
+   *  @source 需检查的字段
+   */
   async missSchemaOrOrder(
     source,
     schema,
@@ -294,7 +297,7 @@ class SyncToPool extends Base {
         } else if (order.costtype_yly === '2') {
           data.duration_price = order.dismoney_time_yly
             ? order.dismoney_time_yly
-            : order.overmoney_time_yly
+            : order.money_time_yly
         }
         Object.assign(postData, data)
       }
